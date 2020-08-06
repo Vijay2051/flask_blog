@@ -1,0 +1,89 @@
+db.create_all()
+>>> from flask_blog import Post, User
+>>> user1 = User(username="rahul", email="suj@gmail.com", password = "password")
+>>> user2 = User(username="vijay", email = "vj@gmail.com", password="password")
+>>> dn.session.add(user1, user2)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'dn' is not defined
+>>> db.session.add(user1, user2)
+>>> db.session.commit()
+>>> User.query.all()
+[User('rahul', 'suj@gmail.com', 'default.jpg')]
+>>> db.session.add(user2)
+>>> db.session.commit()
+>>> User.query.all()
+[User('rahul', 'suj@gmail.com', 'default.jpg'), User('vijay', 'vj@gmail.com', 'default.jpg')]
+>>> user3 = User(username="vj", email="vi@gmail.com", password="password")
+>>> user3 = User(username="vnhj", email="vnhi@gmail.com", password="password")
+>>> user3
+User('vnhj', 'vnhi@gmail.com', 'None')
+>>> user4 = User(username="vj", email="vi@gmail.com", password="password")
+>>> user4
+User('vj', 'vi@gmail.com', 'None')
+>>> user3
+User('vnhj', 'vnhi@gmail.com', 'None')
+
+""""""""""""""""""'For bulk data commitimg into the db """""""""""""""""""""""""
+
+>>> db.session.bulk_save_objects([user3, user4])
+>>> db.session.commit()
+
+
+>>> db.session.commit()
+>>> User.queryall()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: type object 'User' has no attribute 'queryall'
+>>> User.query.all()
+[User('rahul', 'suj@gmail.com', 'default.jpg'), User('vijay', 'vj@gmail.com', 'default.jpg'), User('vnhj', 'vnhi@gmail.com', 'default.jpg'), User('vj', 'vi@gmail.com', 'default.jpg')]
+>>> 
+
+"""""""""query filter condition """"""""""""""""""
+
+
+ User.query.filter_by(username = "rahul").all()
+[User('rahul', 'suj@gmail.com', 'default.jpg')]
+>>> 
+
+""""""""""""" get command if you want to get the user or model's particular data from id """""""""""""
+""""""""""" you could use a get command """""""""""""""""""""""
+
+> user = User.query.get(1)
+>>> user
+User('rahul', 'suj@gmail.com', 'default.jpg')
+>>> user = User.query.get(2)
+>>> usert
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'usert' is not defined
+>>> user
+User('vijay', 'vj@gmail.com', 'default.jpg')
+>>> 
+
+
+
+"""""""""""""querying all the posts related to the particular user """""""""""
+>> user
+User('vijay', 'vj@gmail.com', 'default.jpg')
+>>> user.posts
+[Post ('titanic', '2020-08-06 07:37:15.295862'), Post ('rathsarithram', '2020-08-06 07:37:15.295873')]
+>>> 
+
+
+
+""""""""""""querying the first and fetching the values from the usser_id """"""""""""""""
+
+>>> post = Post.query.first()
+>>> post
+Post ('titanic', '2020-08-06 07:37:15.295862')
+>>> post.user_id
+2
+
+
+
+"""""""""""""""'using the backref to find the values of the user object """""""""""""""""""
+
+>>> post.author
+User('vijay', 'vj@gmail.com', 'default.jpg')
+>>>  
