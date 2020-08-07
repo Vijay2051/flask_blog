@@ -87,3 +87,22 @@ Post ('titanic', '2020-08-06 07:37:15.295862')
 >>> post.author
 User('vijay', 'vj@gmail.com', 'default.jpg')
 >>>  
+
+
+
+
+
+"""""""""""""""""""""   flask encrypt and ecrypt security """"""""""""""""""""""
+
+
+>>> from flask_bcrypt import Bcrypt
+>>> enc = Bcrypt()
+>>> hashed_pass = enc.generate_password_hash("vijay").decode("utf-8")
+>>> hashed_pass
+'$2b$12$NwXZuG79f8T./mhogQWoaezeVCbDqDQT01/lA9.zI/3PtxUan/NMm'
+>>> enc.check_password_hash(hashed_pass, "vijay")
+True
+
+
+
+
