@@ -1,0 +1,44 @@
+{%extends "layout.html"%}
+{%block content%}
+<h1>Blog Home!</h1>
+<article class="media content-section">
+    <img class="rounded-circle article-img"
+        src="{{url_for('static', filename="profile_pics/" + posts.author.image_file)}}" alt="">
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="#">{{ posts.author.username }}</a>
+            <small class="text-muted">{{ posts.date_posted.strftime('%Y-%m-%d') }}</small>
+
+        </div>
+        <h2><a class="article-title">{{ posts.title }}</a></h2>
+        <p class="article-content">{{ posts.content }}</p>
+    </div>
+</article>
+{% if posts.author == current_user%}
+<a class="btn btn-secondary btn-sm m-1" href="{{url_for('update_post', post_id = posts.id)}}">Update</a>
+<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Do you really wanna delete this post...kandippa Delete pannanuma   ;-?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <form action="{{url_for('delete_post', post_id = posts.id)}}">
+                    <input type="submit" class="btn btn-damger" value="Delete">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif%}
+{%endblock content%}
