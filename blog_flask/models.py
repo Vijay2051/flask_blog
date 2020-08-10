@@ -1,8 +1,9 @@
 from datetime import datetime
 
 from flask_login import UserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from blog_flask import db, login_manager
+from blog_flask import db, login_manager, app
 
 
 @login_manager.user_loader
@@ -18,6 +19,21 @@ class User(db.Model, UserMixin):
                            default="default.jpg")
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
+
+    def get_reset_token(self, expire_lim=1800):
+        s = Serializer(
+            secret_key=app.config['SECRET_KEY'], expires_in=expire_lim)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod  # this decorator tells python to dont expect self and to use without self arg
+    def verify_reset_token(token):
+        # refer the txt file for further clarification of how the data will be like and how to fetch the user_id from the token link
+        s = Serializer(secret_key=app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except Exception as e:
+            return None
+        return User.query.get(user_id)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"

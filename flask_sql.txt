@@ -106,3 +106,66 @@ True
 
 
 
+""""""""""""""""" pagination technques in flask """"""""""""""""""""""""""
+
+
+>>> posts = Post.query.paginate()
+>>> posts
+<flask_sqlalchemy.Pagination object at 0x7f1ee70d14f0>
+>>> dir(posts)
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 'has_next', 'has_prev', 'items', 'iter_pages', 'next', 'next_num', 'page', 'pages', 'per_page', 'prev', 'prev_num', 'query', 'total']
+>>> posts.page
+1
+>>> posts.per_page
+20
+>>> posts.next
+<bound method Pagination.next of <flask_sqlalchemy.Pagination object at 0x7f1ee70d14f0>>
+>>> posts.per_page
+20
+>>> posts
+<flask_sqlalchemy.Pagination object at 0x7f1ee70d14f0>
+>>> posts.items
+[Post ('Titanic by James Cameroon', '2020-08-09 21:24:11.119626'), Post ('Test', '2020-08-10 03:42:52.410280'), Post ('My Updated Post', '2020-08-10 04:01:39.677110'), Post ('A Second Post', '2020-08-10 04:01:39.693268'), Post ('Top 5 Programming Lanaguages', '2020-08-10 04:01:39.712449'), Post ('Sublime Text Tips and Tricks', '2020-08-10 04:01:39.725821'), Post ('Best Python IDEs', '2020-08-10 04:01:39.743363'), Post ('Flask vs Django - Which Is Better?', '2020-08-10 04:01:39.757436'), Post ('These Beers Will Improve Your Programming', '2020-08-10 04:01:39.776107'), Post ('List of PyCon 2018 Talks', '2020-08-10 04:01:39.789109'), Post ('How Dogs in the Workplace Boosts Productivity', '2020-08-10 04:01:39.804348'), Post ('The Best Programming Podcasts', '2020-08-10 04:01:39.822288'), Post ('Tips for Public Speaking', '2020-08-10 04:01:39.838527'), Post ('Best Programmers Throughout History', '2020-08-10 04:01:39.855897'), Post ('How To Create A YouTube Channel', '2020-08-10 04:01:39.872226'), Post ('How I Record My Videos', '2020-08-10 04:01:39.890945'), Post ('Python and Physics', '2020-08-10 04:01:39.908435'), Post ('Just A Few More Healines Should Do It', '2020-08-10 04:01:39.928397'), Post ('Music To Listen To While Coding', '2020-08-10 04:01:39.942556'), Post ('5 Tips for Writing Catchy Headlines', '2020-08-10 04:01:39.958280')]
+>>> posts.previous
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'Pagination' object has no attribute 'previous'
+>>> posts.prev
+<bound method Pagination.prev of <flask_sqlalchemy.Pagination object at 0x7f1ee70d14f0>>
+>>> posts.items
+[Post ('Titanic by James Cameroon', '2020-08-09 21:24:11.119626'), Post ('Test', '2020-08-10 03:42:52.410280'), Post ('My Updated Post', '2020-08-10 04:01:39.677110'), Post ('A Second Post', '2020-08-10 04:01:39.693268'), Post ('Top 5 Programming Lanaguages', '2020-08-10 04:01:39.712449'), Post ('Sublime Text Tips and Tricks', '2020-08-10 04:01:39.725821'), Post ('Best Python IDEs', '2020-08-10 04:01:39.743363'), Post ('Flask vs Django - Which Is Better?', '2020-08-10 04:01:39.757436'), Post ('These Beers Will Improve Your Programming', '2020-08-10 04:01:39.776107'), Post ('List of PyCon 2018 Talks', '2020-08-10 04:01:39.789109'), Post ('How Dogs in the Workplace Boosts Productivity', '2020-08-10 04:01:39.804348'), Post ('The Best Programming Podcasts', '2020-08-10 04:01:39.822288'), Post ('Tips for Public Speaking', '2020-08-10 04:01:39.838527'), Post ('Best Programmers Throughout History', '2020-08-10 04:01:39.855897'), Post ('How To Create A YouTube Channel', '2020-08-10 04:01:39.872226'), Post ('How I Record My Videos', '2020-08-10 04:01:39.890945'), Post ('Python and Physics', '2020-08-10 04:01:39.908435'), Post ('Just A Few More Healines Should Do It', '2020-08-10 04:01:39.928397'), Post ('Music To Listen To While Coding', '2020-08-10 04:01:39.942556'), Post ('5 Tips for Writing Catchy Headlines', '2020-08-10 04:01:39.958280')]
+>>> 
+
+posts = Post.query.paginate(page=2)
+for i in posts.items:
+  print(i)
+
+
+
+
+""""""""" if you need specific no.of items per page you could pass a per_page argument in the paginate """"""""""""""
+Post.query.paginate(per_page=2)
+
+
+
+
+
+"""""""""""""""""""" token serializer in flask for email config """""""""""""""""""
+>>> from itsdangerous import TimedJSONWebSignatureSerializer as Ser
+>>> s= Ser('secret', 30)
+>>> token = s.dumps({'suer_id': 1}).decode('utf-8')
+>>> token
+'eyJhbGciOiJIUzUxMiIsImlhdCI6MTU5NzAyNzYxMywiZXhwIjoxNTk3MDI3NjQzfQ.eyJzdWVyX2lkIjoxfQ.QC20LwFc10vRUWiQ56QrzkTg4EhRdhAjKVX8GlfedDk0vRNrVN3p3aH1LH42LIQ6SImTRvYMdh_2ezp_axI1RQ'
+>>> s.loads(token)
+{'suer_id': 1}
+>>> s.loads(token)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/lib/python3/dist-packages/itsdangerous/jws.py", line 202, in loads
+    raise SignatureExpired(
+itsdangerous.exc.SignatureExpired: Signature expired
+
+
+
+
+""""""""""""""""""""""
