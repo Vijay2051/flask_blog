@@ -169,3 +169,46 @@ itsdangerous.exc.SignatureExpired: Signature expired
 
 
 """"""""""""""""""""""
+
+
+""""""""""""" registration user authenticity could be found here """"""""""""
+
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(
+            form.password.data).decode('utf-8')
+        user = User(username=form.username.data,
+                    email=form.email.data, password=hashed_password)
+
+
+        s = Serializer(secret_key=app.config['SECRET_KEY'], expires_in=1800)
+        token = s.dumps({'user_email': user.email}).decode('utf-8')
+        msg = Message("Password reset request", sender = blog_flask.email, recipients=[user.email])
+        msg.body=f"""
+        To reset your password click this link: {url_for('confirm_registration', token=token, _external=True)}
+        """
+        mail.send(msg)
+
+        # db.session.add(user)
+        # db.session.commit()
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+@app.route("/register/<token>")
+def confirm_registration(token):
+    s = Serializer(secret_key=app.config['SECRET_KEY'])
+    user = s.loads(token)['user_email']
+    print(user)
+
+
+
+  This is the tokenisational verification of regitering the user """""""""""""""""""""""""""""""""""
+
+
+
+
+  
