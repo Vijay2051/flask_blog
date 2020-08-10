@@ -1,3 +1,4 @@
+import blog_flask
 import os
 import secrets
 from PIL import Image
@@ -171,7 +172,7 @@ def author(username):
 
 def send_reset_password_token(user):
     token = user.get_reset_token()
-    msg = Message("Password reset request", sender = "message.mail2051@gmail.com", recipients=[user.email])
+    msg = Message("Password reset request", sender = blog_flask.email, recipients=[user.email])
     print(user.email)
     msg.body=f"""
     To reset your password click this link: {url_for('reset_token', token=token, _external=True)}
