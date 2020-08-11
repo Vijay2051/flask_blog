@@ -1,5 +1,5 @@
 #ignoring the pycache which is not needed
-!**/__pycache__/
+__pycache__/
 
 #ignoring the sh file which is the env variable file for me
 .sh
