@@ -1,26 +1,48 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from blog_flask import bcrypt, db
+import blog_flask
+from blog_flask import app, bcrypt, db
 from blog_flask.models import Post, User
-from blog_flask.users.utils import picture_save, send_reset_password_token
-
-from blog_flask.users.forms import (LoginForm, RegistrationForm, RequestResetForm,
-                    ResetPasswordForm, UpdateAccountForm)
+from blog_flask.users.forms import (ConfirmRegisterForm, LoginForm,
+                                    RegistrationForm, RequestResetForm,
+                                    ResetPasswordForm, UpdateAccountForm)
+from blog_flask.users.utils import (picture_save, send_registration_token,
+                                    send_reset_password_token)
 
 users = Blueprint('users', __name__)
 
 
-@users.route("/register", methods=['POST', 'GET'])
-def register():
+@users.route("/register", methods=['GET', 'POST'])
+def confirm_register():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
+    form = ConfirmRegisterForm()
+    if form.validate_on_submit():
+        send_registration_token(form.email.data)
+        flash("An email for the registration link is sent to you, Check your email and click the Link to proceed the registration", "info")
+        return redirect(url_for('users.confirm_register'))
+    return render_template("register_confirm.html", form=form)
+
+
+@users.route("/register/<token>", methods=['POST', 'GET'])
+def register(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    s = Serializer(secret_key=app.config['SECRET_KEY'])
+    try:
+        email = s.loads(token)['email']
+    except Exception as e:
+        flash("This is an invalid or expired token..if you opt for registration submit your mail, get the link and fill the credentials within 30 mins", "danger")
+        return redirect(url_for('users.confirm_register'))
+    print(email)
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(
             form.password.data).decode('utf-8')
         user = User(username=form.username.data,
-                    email=form.email.data, password=hashed_password)
+                    email=email, password=hashed_password)
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')

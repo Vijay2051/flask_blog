@@ -8,11 +8,20 @@ from wtforms.validators import (DataRequired, Email, EqualTo, Length,
 from blog_flask.models import User
 
 
+class ConfirmRegisterForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Submit')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError(
+                "That email already exists, So kindly go to login Page")
+
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(), Length(min=6, max=20)])
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])

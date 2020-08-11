@@ -1,12 +1,15 @@
 import os
 import secrets
 
-from flask import url_for
+from flask import url_for, redirect
+from flask.helpers import flash
 from flask_mail import Message
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from PIL import Image
+from werkzeug.utils import redirect
 
-import blog_flask
 from blog_flask import app, mail
+from blog_flask.config import email
 
 
 # Method to save the incoming profile picture updated by the  user
@@ -30,9 +33,17 @@ def picture_save(picture):
 def send_reset_password_token(user):
     token = user.get_reset_token()
     msg = Message("Password reset request",
-                  sender=blog_flask.email, recipients=[user.email])
+                  sender=email, recipients=[user.email])
     print(user.email)
     msg.body = f"""
     To reset your password click this link: {url_for('users.reset_token', token=token, _external=True)}
     """
+    mail.send(msg)
+
+
+def send_registration_token(email):
+    s = Serializer(secret_key=app.config['SECRET_KEY'], expires_in=1800)
+    token = s.dumps({"email": email}).decode("utf-8")
+    msg = Message("Registration Request", sender=email, recipients=[email])
+    msg.body = f"To confirm the registration process click the url gievn below: {url_for('users.register', token=token, _external=True)}"
     mail.send(msg)
