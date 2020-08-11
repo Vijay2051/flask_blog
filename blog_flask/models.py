@@ -1,9 +1,10 @@
 from datetime import datetime
 
+from flask import current_app
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from blog_flask import db, login_manager, app
+from blog_flask import db, login_manager
 
 
 @login_manager.user_loader
@@ -22,13 +23,13 @@ class User(db.Model, UserMixin):
 
     def get_reset_token(self, expire_lim=1800):
         s = Serializer(
-            secret_key=app.config['SECRET_KEY'], expires_in=expire_lim)
+            secret_key=current_app.config['SECRET_KEY'], expires_in=expire_lim)
         return s.dumps({'user_id': self.id}).decode('utf-8')
 
     @staticmethod  # this decorator tells python to dont expect self and to use without self arg
     def verify_reset_token(token):
         # refer the txt file for further clarification of how the data will be like and how to fetch the user_id from the token link
-        s = Serializer(secret_key=app.config['SECRET_KEY'])
+        s = Serializer(secret_key=current_app.config['SECRET_KEY'])
         try:
             user_id = s.loads(token)['user_id']
         except Exception as e:

@@ -2,8 +2,8 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-import blog_flask
-from blog_flask import app, bcrypt, db
+from flask import current_app
+from blog_flask import bcrypt, db
 from blog_flask.models import Post, User
 from blog_flask.users.forms import (ConfirmRegisterForm, LoginForm,
                                     RegistrationForm, RequestResetForm,
@@ -30,7 +30,7 @@ def confirm_register():
 def register(token):
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
-    s = Serializer(secret_key=app.config['SECRET_KEY'])
+    s = Serializer(secret_key=current_app.config['SECRET_KEY'])
     try:
         email = s.loads(token)['email']
     except Exception as e:

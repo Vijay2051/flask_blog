@@ -1,14 +1,13 @@
 import os
 import secrets
 
-from flask import url_for, redirect
-from flask.helpers import flash
+from flask import current_app
+from flask import url_for
 from flask_mail import Message
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from PIL import Image
-from werkzeug.utils import redirect
 
-from blog_flask import app, mail
+from blog_flask import mail
 from blog_flask.config import email
 
 
@@ -19,7 +18,7 @@ def picture_save(picture):
     _, f_ext = os.path.splitext(picture.filename)
     picture_filename = random_hex + f_ext
     picture_path = os.path.join(
-        app.root_path, 'static/profile_pics', picture_filename)
+        current_app.root_path, 'static/profile_pics', picture_filename)
 
     # Code to resize or scaledown the incoming  image to smaller sizes using pillow
     output_size = (125, 125)
@@ -42,7 +41,7 @@ def send_reset_password_token(user):
 
 
 def send_registration_token(email):
-    s = Serializer(secret_key=app.config['SECRET_KEY'], expires_in=1800)
+    s = Serializer(secret_key=current_app.config['SECRET_KEY'], expires_in=1800)
     token = s.dumps({"email": email}).decode("utf-8")
     msg = Message("Registration Request", sender=email, recipients=[email])
     msg.body = f"To confirm the registration process click the url gievn below: {url_for('users.register', token=token, _external=True)}"
