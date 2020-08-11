@@ -33,6 +33,6 @@ def send_reset_password_token(user):
                   sender=blog_flask.email, recipients=[user.email])
     print(user.email)
     msg.body = f"""
-    To reset your password click this link: {url_for('reset_token', token=token, _external=True)}
+    To reset your password click this link: {url_for('users.reset_token', token=token, _external=True)}
     """
     mail.send(msg)
