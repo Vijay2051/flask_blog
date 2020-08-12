@@ -9,3 +9,8 @@ COPY . /app
 RUN pip3 --no-cache-dir install -r requirement.txt
 
 
+EXPOSE 5000
+ENTRYPOINT ["sh"]
+CMD ["run.sh"]
+
+
