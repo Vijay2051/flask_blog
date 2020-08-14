@@ -7,3 +7,4 @@ flask_wtf
 wtforms
 email_validator
 pillow
+psycopg2-binary
