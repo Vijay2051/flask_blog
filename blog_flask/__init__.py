@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
-
+from blog_flask.commands import create_tables
 # you could generate a secret key with secret.token_hex(some integer)
 
 db = SQLAlchemy()
@@ -31,5 +31,6 @@ def create_app(config_class=Config):
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(main)
+    app.cli.add_command(create_tables)
 
     return app
