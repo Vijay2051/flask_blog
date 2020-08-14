@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Flask = "*"
+Flask-Bcrypt = "*"
+Flask-Login = "*"
+Flask-Mail = "*"
+Flask-SQLAlchemy = "*"
+Flask-WTF = "*"
+WTForms = "*"
+email-validator = "*"
+Pillow = "*"
+gunicorn = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
