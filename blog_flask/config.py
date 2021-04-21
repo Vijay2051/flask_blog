@@ -1,5 +1,5 @@
 import os
-email = "message.mail2051@gmail.com"
+email = "message.mail@gmail.com"
 password = "puneetha"
 postgres = os.environ.get('DATABASE_URL')
 
